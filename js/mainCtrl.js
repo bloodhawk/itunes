@@ -1,6 +1,7 @@
 var app = angular.module('itunes');
 
-app.controller('mainCtrl', function ($scope, itunesService) {
+app.controller('mainCtrl', function ($scope, $window, itunesService) {
+    $scope.sortBy = '';
     $scope.gridOptions = {
         data: 'songData',
         height: '110px',
@@ -49,15 +50,22 @@ app.controller('mainCtrl', function ($scope, itunesService) {
     };
 
     $scope.getSongData = function () {
-        itunesService.getData($scope.artist).then(function (itunesData) {
+        itunesService.getData($scope.artist, $scope.sortBy).then(function (itunesData) {
             $scope.songData = sortData(itunesData);
         });
     };
+    $scope.songData = [];
     $scope.getTableStyle= function() {
-       var rowHeight=105;
+       var rowHeight=110;
        var headerHeight=300;
-       return {
-          height: ($scope.songData.length * rowHeight + headerHeight) + "px"
-       };
+       if($scope.songData.length > 5) {
+         return {
+            height: ($scope.songData.length * rowHeight + headerHeight) + "px"
+          };
+       } else {
+         return {
+            height: ($window.innerHeight - 57)
+         };
+       }
     };
 });
